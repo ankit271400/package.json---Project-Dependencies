@@ -1,0 +1,24 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // User routes
+  app.get("/api/users/:id", async (req, res) => {
+    // ... [User retrieval logic]
+  });
+
+  // Waste bin routes
+  app.get("/api/waste-bins", async (req, res) => {
+    // ... [Waste bin retrieval logic]
+  });
+
+  app.post("/api/waste-bins/:id/simulate-disposal", async (req, res) => {
+    // ... [Waste disposal simulation with AI classification]
+  });
+
+  // ... [Additional routes for products, DAO, recycler bids, etc.]
+  
+  const httpServer = createServer(app);
+  return httpServer;
+}
