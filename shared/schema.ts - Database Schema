@@ -1,0 +1,39 @@
+import { pgTable, text, serial, integer, boolean, timestamp, decimal, jsonb } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+
+export const users = pgTable("users", {
+  id: serial("id").primaryKey(),
+  walletAddress: text("wallet_address").unique(),
+  username: text("username").notNull().unique(),
+  email: text("email"),
+  greenTokens: integer("green_tokens").default(0),
+  totalWasteSorted: decimal("total_waste_sorted", { precision: 10, scale: 2 }).default("0"),
+  co2Saved: decimal("co2_saved", { precision: 10, scale: 2 }).default("0"),
+  leaderboardRank: integer("leaderboard_rank").default(0),
+  votingPower: integer("voting_power").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const wasteBins = pgTable("waste_bins", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  location: text("location").notNull(),
+  wetWasteLevel: integer("wet_waste_level").default(0),
+  dryWasteLevel: integer("dry_waste_level").default(0),
+  hazardousWasteLevel: integer("hazardous_waste_level").default(0),
+  isOnline: boolean("is_online").default(true),
+  lastMaintenance: timestamp("last_maintenance").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// ... [Additional table definitions for wasteDisposals, wasteNFTs, recyclerBids, products, daoProposals, daoVotes, transactions]
+
+// Schema exports
+export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
+// ... [Additional schema exports]
+
+// Type exports
+export type User = typeof users.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;
+// ... [Additional type exports]
